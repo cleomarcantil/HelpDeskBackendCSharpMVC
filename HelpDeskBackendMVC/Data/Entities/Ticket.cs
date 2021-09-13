@@ -51,12 +51,22 @@ namespace HelpDeskBackendMVC.Data.Entities
 		{
 			_notasInternas.Add(new TicketMensagem(usuarioId, conteudo));
 		}
+
+		public void Encaminhar(int atendenteDestinoId, string notaEncaminhamento)
+		{
+			int atendenteAtualId = this.AtendenteId ?? atendenteDestinoId;
+
+			_notasInternas.Add(new TicketMensagem(atendenteAtualId, notaEncaminhamento));
+			AtendenteId = atendenteDestinoId;
+			Status = TicketStatus.Encaminhado;
+		}
 	}
 
 	public enum TicketStatus
 	{
 		EmAberto,
 		EmAtendimento,
+		Encaminhado,
 	}
 
 }

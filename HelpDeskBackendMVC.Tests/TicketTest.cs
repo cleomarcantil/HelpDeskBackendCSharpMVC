@@ -59,7 +59,22 @@ public class TicketTest
 	}
 
 	// TODO: AdicionarAnexo
-	// TODO: Encaminhar
+
+	[Fact]
+	public void Encaminhar()
+	{
+		var ticket = new Ticket(1, "Mensagem origem", TicketStatus.EmAberto);
+		int AtendenteDestinoId = 5;
+		string notaEncaminhamento = "Nota encaminhamento";
+
+		ticket.Encaminhar(AtendenteDestinoId, notaEncaminhamento);
+
+		Assert.Equal(ticket.NotasInternas.Last().UsuarioId, AtendenteDestinoId);
+		Assert.Equal(ticket.NotasInternas.Last().Conteudo, notaEncaminhamento);
+		Assert.Equal(ticket.AtendenteId, AtendenteDestinoId);
+		Assert.Equal(TicketStatus.Encaminhado, ticket.Status);
+	}
+
 	// TODO: FinalizarAtendimento
 	// TODO: Consultar
 
