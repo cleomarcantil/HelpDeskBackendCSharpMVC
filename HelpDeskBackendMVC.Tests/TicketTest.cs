@@ -75,7 +75,23 @@ public class TicketTest
 		Assert.Equal(TicketStatus.Encaminhado, ticket.Status);
 	}
 
-	// TODO: FinalizarAtendimento
+	[Fact]
+	public void FinalizarAtendimento()
+	{
+		var ticket = new Ticket(1, "Mensagem origem", TicketStatus.EmAberto);
+		int AtendenteFinalizacaoId = 6;
+		string notaFinalizacao = "Nota finalização";
+
+		ticket.Finalizar(AtendenteFinalizacaoId, notaFinalizacao);
+
+		Assert.Equal(ticket.NotasInternas.Last().UsuarioId, AtendenteFinalizacaoId);
+		Assert.Equal(ticket.NotasInternas.Last().Conteudo, notaFinalizacao);
+		Assert.Null(ticket.AtendenteId);
+		Assert.Equal(TicketStatus.Finalizado, ticket.Status);
+	}
+
+
+
 	// TODO: Consultar
 
 }

@@ -60,6 +60,13 @@ namespace HelpDeskBackendMVC.Data.Entities
 			AtendenteId = atendenteDestinoId;
 			Status = TicketStatus.Encaminhado;
 		}
+
+		public void Finalizar(int atendenteFinalizacaoId, string notaFinalizacao)
+		{
+			_notasInternas.Add(new TicketMensagem(atendenteFinalizacaoId, notaFinalizacao));
+			AtendenteId = null;
+			Status = TicketStatus.Finalizado;
+		}
 	}
 
 	public enum TicketStatus
@@ -67,6 +74,7 @@ namespace HelpDeskBackendMVC.Data.Entities
 		EmAberto,
 		EmAtendimento,
 		Encaminhado,
+		Finalizado,
 	}
 
 }
