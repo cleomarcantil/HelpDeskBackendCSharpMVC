@@ -45,7 +45,19 @@ public class TicketTest
 		Assert.Equal(ticket.Mensagens.Last().Conteudo, conteudoMensagem);
 	}
 
-	// TODO: AdicionarNotaInterna
+	[Fact]
+	public void AdicionarNotaInterna()
+	{
+		var ticket = new Ticket(1, "Mensagem origem", TicketStatus.EmAberto);
+		int usuarioMensagemId = 2;
+		string conteudoNota = "Nota interna";
+
+		ticket.AdicionarNotaInterna(usuarioMensagemId, conteudoNota);
+
+		Assert.Equal(ticket.NotasInternas.Last().UsuarioId, usuarioMensagemId);
+		Assert.Equal(ticket.NotasInternas.Last().Conteudo, conteudoNota);
+	}
+
 	// TODO: AdicionarAnexo
 	// TODO: Encaminhar
 	// TODO: FinalizarAtendimento
