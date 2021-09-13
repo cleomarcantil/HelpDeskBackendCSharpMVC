@@ -7,22 +7,28 @@ namespace HelpDeskBackendMVC.Data.Entities
 {
 	public class Ticket
 	{
-		public Ticket(string mensagem, TicketStatus status, int? atendenteId = null)
+		private List<TicketMensagem> _mensagens = new();
+
+		public Ticket(int usuarioId, string mensagem, TicketStatus status, int? atendenteId = null)
 		{
-			Mensagem = mensagem;
+			UsuarioId = usuarioId;
 			Status = status;
 			AtendenteId = atendenteId;
+			_mensagens.Add(new TicketMensagem(usuarioId, mensagem));
 		}
 
-		public string Mensagem { get; private set; }
+		public int UsuarioId { get; private set; }
 
 		public TicketStatus Status { get; private set; }
 
 		public int? AtendenteId { get; private set; }
 
-		public static Ticket Create(string mensagem)
+		public IReadOnlyCollection<TicketMensagem> Mensagens => _mensagens;
+
+
+		public static Ticket Create(int usuarioId, string mensagem)
 		{
-			var ticket = new Ticket(mensagem, TicketStatus.EmAberto);
+			var ticket = new Ticket(usuarioId, mensagem, TicketStatus.EmAberto);
 
 			return ticket;
 		}
@@ -31,6 +37,11 @@ namespace HelpDeskBackendMVC.Data.Entities
 		{
 			AtendenteId = atendenteId;
 			Status = TicketStatus.EmAtendimento;
+		}
+
+		public void AdicionarMensagem(int usuarioId, string conteudo)
+		{
+			_mensagens.Add(new TicketMensagem(usuarioId, conteudo));
 		}
 	}
 

@@ -8,12 +8,14 @@ public class TicketTest
 	[Fact]
 	public void Criar()
 	{
+		const int USUARIO_CHAMADO = 1;
 		const string MENSAGEM_CHAMADO = "Chamado teste";
 
-		var ticket = Ticket.Create(MENSAGEM_CHAMADO);
+		var ticket = Ticket.Create(USUARIO_CHAMADO, MENSAGEM_CHAMADO);
 
 		Assert.NotNull(ticket);
-		Assert.Equal(MENSAGEM_CHAMADO, ticket.Mensagem);
+		Assert.Equal(USUARIO_CHAMADO, ticket.UsuarioId);
+		Assert.Equal(MENSAGEM_CHAMADO, ticket.Mensagens.Last().Conteudo);
 		Assert.Equal(TicketStatus.EmAberto, ticket.Status);
 	}
 
@@ -21,7 +23,7 @@ public class TicketTest
 	public void IniciarAtendimento()
 	{
 		var atendenteId = 9;
-		var ticket = new Ticket("...", TicketStatus.EmAberto);
+		var ticket = new Ticket(1, "...", TicketStatus.EmAberto);
 
 		ticket.IniciarAtendimento(atendenteId);
 
@@ -30,7 +32,19 @@ public class TicketTest
 		Assert.Equal(TicketStatus.EmAtendimento, ticket.Status);
 	}
 
-	// TODO: AdicionarMensagem
+	[Fact]
+	public void AdicionarMensagem()
+	{
+		var ticket = new Ticket(1, "Mensagem origem", TicketStatus.EmAberto);
+		int usuarioMensagemId = 2;
+		string conteudoMensagem = "Resposta";
+
+		ticket.AdicionarMensagem(usuarioMensagemId, conteudoMensagem);
+
+		Assert.Equal(ticket.Mensagens.Last().UsuarioId, usuarioMensagemId);
+		Assert.Equal(ticket.Mensagens.Last().Conteudo, conteudoMensagem);
+	}
+
 	// TODO: AdicionarNotaInterna
 	// TODO: AdicionarAnexo
 	// TODO: Encaminhar
