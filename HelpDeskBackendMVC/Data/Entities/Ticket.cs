@@ -10,61 +10,69 @@ namespace HelpDeskBackendMVC.Data.Entities
 		private List<TicketMensagem> _mensagens = new();
 		private List<TicketMensagem> _notasInternas = new();
 
-		public Ticket(int usuarioId, string mensagem, TicketStatus status, int? atendenteId = null)
+		public Ticket(Usuario autor, Departamento departamento, string mensagem, TicketStatus status, Usuario? atendente = null)
 		{
-			UsuarioId = usuarioId;
+			Autor = autor;
+			Departamento = departamento;
 			Status = status;
-			AtendenteId = atendenteId;
-			_mensagens.Add(new TicketMensagem(usuarioId, mensagem));
+			Atendente = atendente;
+			_mensagens.Add(new TicketMensagem(autor, mensagem));
 		}
 
-		public int UsuarioId { get; private set; }
+		public Usuario Autor { get; private set; }
+
+		public Departamento Departamento { get; private set; }
 
 		public TicketStatus Status { get; private set; }
 
-		public int? AtendenteId { get; private set; }
+
+		// TODO: Refatorar Usuario para Atendente
+		public Usuario? Atendente { get; private set; }
 
 		public IReadOnlyCollection<TicketMensagem> Mensagens => _mensagens;
 
 		public IReadOnlyCollection<TicketMensagem> NotasInternas => _notasInternas;
 
 
-		public static Ticket Create(int usuarioId, string mensagem)
+		public static Ticket Create(Usuario usuario, Departamento departamento, string mensagem)
 		{
-			var ticket = new Ticket(usuarioId, mensagem, TicketStatus.EmAberto);
+			var ticket = new Ticket(usuario, departamento, mensagem, TicketStatus.EmAberto);
 
 			return ticket;
 		}
 
-		public void IniciarAtendimento(int atendenteId)
+		// TODO: Refatorar Usuario para Atendente
+		public void IniciarAtendimento(Usuario atendente)
 		{
-			AtendenteId = atendenteId;
+			Atendente = atendente;
 			Status = TicketStatus.EmAtendimento;
 		}
 
-		public void AdicionarMensagem(int usuarioId, string conteudo)
+		public void AdicionarMensagem(Usuario usuario, string conteudo)
 		{
-			_mensagens.Add(new TicketMensagem(usuarioId, conteudo));
+			_mensagens.Add(new TicketMensagem(usuario, conteudo));
 		}
 
-		public void AdicionarNotaInterna(int usuarioId, string conteudo)
+		public void AdicionarNotaInterna(Usuario usuario, string conteudo)
 		{
-			_notasInternas.Add(new TicketMensagem(usuarioId, conteudo));
+			_notasInternas.Add(new TicketMensagem(usuario, conteudo));
 		}
 
-		public void Encaminhar(int atendenteDestinoId, string notaEncaminhamento)
+		// TODO: Refatorar Usuario para Atendente
+		public void Encaminhar(Usuario atendenteDestino, string notaEncaminhamento)
 		{
-			int atendenteAtualId = this.AtendenteId ?? atendenteDestinoId;
+			var atendenteAtual = this.Atendente ?? atendenteDestino;
 
-			_notasInternas.Add(new TicketMensagem(atendenteAtualId, notaEncaminhamento));
-			AtendenteId = atendenteDestinoId;
+			_notasInternas.Add(new TicketMensagem(atendenteAtual, notaEncaminhamento));
+			Atendente = atendenteDestino;
 			Status = TicketStatus.Encaminhado;
 		}
 
-		public void Finalizar(int atendenteFinalizacaoId, string notaFinalizacao)
+		// TODO: Refatorar Usuario para Atendente
+		public void Finalizar(Usuario atendenteFinalizacao, string notaFinalizacao)
 		{
-			_notasInternas.Add(new TicketMensagem(atendenteFinalizacaoId, notaFinalizacao));
-			AtendenteId = null;
+			_notasInternas.Add(new TicketMensagem(atendenteFinalizacao, notaFinalizacao));
+			Atendente = null;
 			Status = TicketStatus.Finalizado;
 		}
 	}

@@ -2,13 +2,13 @@
 {
 	public class TicketMensagem
 	{
-		public TicketMensagem(int usuarioId, string conteudo)
+		public TicketMensagem(Usuario autor, string conteudo)
 		{
-			UsuarioId = usuarioId;
+			Autor = autor;
 			Conteudo = conteudo;
 		}
 
-		public int UsuarioId { get; set; }
+		public Usuario Autor { get; set; }
 
 		public string Conteudo { get; private set; }
 

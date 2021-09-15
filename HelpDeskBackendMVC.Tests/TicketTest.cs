@@ -9,13 +9,15 @@ public class TicketTest
 	[Fact]
 	public void Criar()
 	{
-		const int USUARIO_CHAMADO = 1;
 		const string MENSAGEM_CHAMADO = "Chamado teste";
+		var autorDoChamado = Usuario.Create("Usuário teste");
+		var departamentoDoChamado = Departamento.Create("Departamento teste");
 
-		var ticket = Ticket.Create(USUARIO_CHAMADO, MENSAGEM_CHAMADO);
+		var ticket = Ticket.Create(autorDoChamado, departamentoDoChamado, MENSAGEM_CHAMADO);
 
 		Assert.NotNull(ticket);
-		Assert.Equal(USUARIO_CHAMADO, ticket.UsuarioId);
+		Assert.Equal(autorDoChamado, ticket.Autor);
+		Assert.Equal(departamentoDoChamado, ticket.Departamento);
 		Assert.Equal(MENSAGEM_CHAMADO, ticket.Mensagens.Last().Conteudo);
 		Assert.Equal(TicketStatus.EmAberto, ticket.Status);
 	}
@@ -23,40 +25,45 @@ public class TicketTest
 	[Fact]
 	public void IniciarAtendimento()
 	{
-		var atendenteId = 9;
-		var ticket = new Ticket(1, "...", TicketStatus.EmAberto);
+		var autorDoChamado = Usuario.Create("Usuário teste");
+		var departamentoDoChamado = Departamento.Create("Departamento teste");
+		var ticket = new Ticket(autorDoChamado, departamentoDoChamado, "...", TicketStatus.EmAberto);
+		var atendenteDoChamado = Usuario.Create("Atendente teste");
 
-		ticket.IniciarAtendimento(atendenteId);
+		ticket.IniciarAtendimento(atendenteDoChamado);
 
-		Assert.NotNull(ticket.AtendenteId);
-		Assert.Equal(atendenteId, ticket.AtendenteId);
+		Assert.Equal(atendenteDoChamado, ticket.Atendente);
 		Assert.Equal(TicketStatus.EmAtendimento, ticket.Status);
 	}
 
 	[Fact]
 	public void AdicionarMensagem()
 	{
-		var ticket = new Ticket(1, "Mensagem origem", TicketStatus.EmAberto);
-		int usuarioMensagemId = 2;
+		var autorDoChamado = Usuario.Create("Usuário teste");
+		var departamentoDoChamado = Departamento.Create("Departamento teste");
+		var ticket = new Ticket(autorDoChamado, departamentoDoChamado, "Mensagem origem", TicketStatus.EmAberto);
+		var usuarioMensagem = Usuario.Create("Usuário teste mensagem");
 		string conteudoMensagem = "Resposta";
 
-		ticket.AdicionarMensagem(usuarioMensagemId, conteudoMensagem);
+		ticket.AdicionarMensagem(usuarioMensagem, conteudoMensagem);
 
-		Assert.Equal(ticket.Mensagens.Last().UsuarioId, usuarioMensagemId);
-		Assert.Equal(ticket.Mensagens.Last().Conteudo, conteudoMensagem);
+		Assert.Equal(usuarioMensagem, ticket.Mensagens.Last().Autor);
+		Assert.Equal(conteudoMensagem, ticket.Mensagens.Last().Conteudo);
 	}
 
 	[Fact]
 	public void AdicionarNotaInterna()
 	{
-		var ticket = new Ticket(1, "Mensagem origem", TicketStatus.EmAberto);
-		int usuarioMensagemId = 2;
+		var autorDoChamado = Usuario.Create("Usuário teste");
+		var departamentoDoChamado = Departamento.Create("Departamento teste");
+		var ticket = new Ticket(autorDoChamado, departamentoDoChamado, "Mensagem origem", TicketStatus.EmAberto);
+		var usuarioNota = Usuario.Create("Usuário teste nota");
 		string conteudoNota = "Nota interna";
 
-		ticket.AdicionarNotaInterna(usuarioMensagemId, conteudoNota);
+		ticket.AdicionarNotaInterna(usuarioNota, conteudoNota);
 
-		Assert.Equal(ticket.NotasInternas.Last().UsuarioId, usuarioMensagemId);
-		Assert.Equal(ticket.NotasInternas.Last().Conteudo, conteudoNota);
+		Assert.Equal(usuarioNota, ticket.NotasInternas.Last().Autor);
+		Assert.Equal(conteudoNota, ticket.NotasInternas.Last().Conteudo);
 	}
 
 	// TODO: AdicionarAnexo
@@ -64,30 +71,34 @@ public class TicketTest
 	[Fact]
 	public void Encaminhar()
 	{
-		var ticket = new Ticket(1, "Mensagem origem", TicketStatus.EmAberto);
-		int AtendenteDestinoId = 5;
+		var autorDoChamado = Usuario.Create("Usuário teste");
+		var departamentoDoChamado = Departamento.Create("Departamento teste");
+		var ticket = new Ticket(autorDoChamado, departamentoDoChamado, "Mensagem origem", TicketStatus.EmAberto);
+		var atendenteDestino = Usuario.Create("Atendente destino");
 		string notaEncaminhamento = "Nota encaminhamento";
 
-		ticket.Encaminhar(AtendenteDestinoId, notaEncaminhamento);
+		ticket.Encaminhar(atendenteDestino, notaEncaminhamento);
 
-		Assert.Equal(ticket.NotasInternas.Last().UsuarioId, AtendenteDestinoId);
-		Assert.Equal(ticket.NotasInternas.Last().Conteudo, notaEncaminhamento);
-		Assert.Equal(ticket.AtendenteId, AtendenteDestinoId);
+		Assert.Equal(atendenteDestino, ticket.NotasInternas.Last().Autor);
+		Assert.Equal(notaEncaminhamento, ticket.NotasInternas.Last().Conteudo);
+		Assert.Equal(atendenteDestino, ticket.Atendente);
 		Assert.Equal(TicketStatus.Encaminhado, ticket.Status);
 	}
 
 	[Fact]
 	public void FinalizarAtendimento()
 	{
-		var ticket = new Ticket(1, "Mensagem origem", TicketStatus.EmAberto);
-		int AtendenteFinalizacaoId = 6;
+		var autorDoChamado = Usuario.Create("Usuário teste");
+		var departamentoDoChamado = Departamento.Create("Departamento teste");
+		var ticket = new Ticket(autorDoChamado, departamentoDoChamado, "Mensagem origem", TicketStatus.EmAberto);
+		var atendenteFinalizacao = Usuario.Create("Atendente finalização"); ;
 		string notaFinalizacao = "Nota finalização";
 
-		ticket.Finalizar(AtendenteFinalizacaoId, notaFinalizacao);
+		ticket.Finalizar(atendenteFinalizacao, notaFinalizacao);
 
-		Assert.Equal(ticket.NotasInternas.Last().UsuarioId, AtendenteFinalizacaoId);
-		Assert.Equal(ticket.NotasInternas.Last().Conteudo, notaFinalizacao);
-		Assert.Null(ticket.AtendenteId);
+		Assert.Equal(atendenteFinalizacao, ticket.NotasInternas.Last().Autor);
+		Assert.Equal(notaFinalizacao, ticket.NotasInternas.Last().Conteudo);
+		Assert.Null(ticket.Atendente);
 		Assert.Equal(TicketStatus.Finalizado, ticket.Status);
 	}
 
