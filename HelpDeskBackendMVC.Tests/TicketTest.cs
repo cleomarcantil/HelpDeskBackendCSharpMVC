@@ -1,4 +1,5 @@
 using HelpDeskBackendMVC.Data.Entities;
+using System.Linq;
 using Xunit;
 
 namespace HelpDeskBackendMVC.Tests;

@@ -68,13 +68,4 @@ namespace HelpDeskBackendMVC.Data.Entities
 			Status = TicketStatus.Finalizado;
 		}
 	}
-
-	public enum TicketStatus
-	{
-		EmAberto,
-		EmAtendimento,
-		Encaminhado,
-		Finalizado,
-	}
-
 }
